@@ -1,7 +1,19 @@
 "use server"
 
-export const loginAction = async (formData: FormData) => {
+type LoginState = {
+	success: true,
+	statusCode: number,
+	message: string,
+	data: {
+		accessToken: string,
+		refreshToken: string
+	}
+}
+
+export const loginAction = async (previousState: LoginState, formData: FormData) => {
 	console.log(formData);
+	console.log(previousState, "Previoue State");
+
 
 	const email = formData.get("email");
 	const password = formData.get("password");
@@ -11,10 +23,10 @@ export const loginAction = async (formData: FormData) => {
 		password
 	}
 
-	const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`,{
+	const res = await fetch(`${process.env.BACKEND_API_URL}/api/auth/login`, {
 		method: "POST",
-		headers:{
-			 "Content-Type" : "application/json"
+		headers: {
+			"Content-Type": "application/json"
 		},
 		body: JSON.stringify(payload)
 	});
@@ -22,5 +34,7 @@ export const loginAction = async (formData: FormData) => {
 	const result = await res.json();
 
 	console.log(result);
-	
+
+	return result
+
 }

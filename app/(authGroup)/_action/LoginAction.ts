@@ -1,6 +1,7 @@
 "use server"
 
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 type LoginState = {
 	success: true,
@@ -33,24 +34,28 @@ export const loginAction = async (previousState: LoginState, formData: FormData)
 		body: JSON.stringify(payload)
 	});
 
-	const result: LoginState = await res.json();
+	const result = await res.json();
 
-	if(result.success){
+	if (result.success) {
 		const cookiStore = await cookies();
 
-		cookiStore.set("accessToken",result.data.accessToken,{
+		cookiStore.set("accessToken", result.data.accessToken, {
 			httpOnly: true,
 			maxAge: 60 * 60 * 24,
 			sameSite: "lax"
 		})
-		cookiStore.set("refreshToken",result.data.refreshToken,{
+		cookiStore.set("refreshToken", result.data.refreshToken, {
 			httpOnly: true,
 			maxAge: 60 * 60 * 24 * 7,
 			sameSite: "lax"
 		})
+
+		redirect("/dashboard");
 	}
 
 	
+
+
 
 	return result
 

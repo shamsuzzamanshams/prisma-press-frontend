@@ -10,6 +10,7 @@ const DashboardLayout = (
 	return (
 		<>
 			{children}
+			
 		</>
 	);
 };

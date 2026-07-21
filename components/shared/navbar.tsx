@@ -1,124 +1,151 @@
-"use client"
+"use client";
 
-import Link from "next/link"
 import {
-	LayoutDashboard,
-	Package,
-	BarChart3,
-	Users,
-	User,
-	Settings,
-	CreditCard,
-	LogOut,
-} from "lucide-react"
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { logout } from "@/service/logout";
+import { LogOut, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
+// Navigation items configuration
 const navItems = [
-	{ title: "Dashboard", href: "/", icon: LayoutDashboard },
-	{ title: "Products", href: "/products", icon: Package },
-	{ title: "Analytics", href: "/analytics", icon: BarChart3 },
-	{ title: "Customers", href: "/customers", icon: Users },
-]
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact" },
+];
 
+// User menu items configuration
 const userMenuItems = [
-	{ title: "Profile", href: "/profile", icon: User },
-	{ title: "Billing", href: "/billing", icon: CreditCard },
-	{ title: "Settings", href: "/settings", icon: Settings },
-]
+  { label: "Profile", icon: User, action: "profile" },
+  { label: "Settings", icon: Settings, action: "settings" },
+];
 
-export function Navbar() {
-	return (
-		<header className="sticky top-0 z-50 w-full border-b bg-background">
-			<div className="container mx-auto grid h-16 grid-cols-3 items-center px-4">
-				{/* Left - Avatar */}
-				<div className="flex justify-start">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								className="relative h-10 w-10 rounded-full p-0"
-							>
-								<Avatar className="h-10 w-10">
-									<AvatarImage
-										src="/diverse-avatars.png"
-										alt="User avatar"
-									/>
-									<AvatarFallback>JD</AvatarFallback>
-								</Avatar>
-							</Button>
-						</DropdownMenuTrigger>
+type IUser = {
+    success : boolean,
+    message : string,
+    data : {
+        profile : {
+            id : string,
+            name : string,
+            email : string,
+            activeStatus : string,
+            role : string,
+            createdAt : string,
+            updatedAt : string,
+            profile : {
+                id : string,
+                profilePhoto : string,
+                bio : string | null,
+                userId : string,
+                createdAt : string,
+                updatedAt : string
+            }
+        }
+    }
+}
 
-						<DropdownMenuContent align="start" className="w-56">
-							<DropdownMenuLabel>
-								<div className="flex flex-col">
-									<span className="font-medium">Jane Doe</span>
-									<span className="text-xs text-muted-foreground">
-										jane@acme.com
-									</span>
-								</div>
-							</DropdownMenuLabel>
+type NavbarProps = {
+    user : IUser
+}
 
-							<DropdownMenuSeparator />
+export function Navbar({user} : NavbarProps) {
+  console.log(user);
+  
+    const router = useRouter()
+  const handleUserMenuAction = async (action: string) => {
 
-							<DropdownMenuGroup>
-								{userMenuItems.map((item) => (
-									<DropdownMenuItem key={item.href} asChild>
-										<Link href={item.href} className="flex items-center w-full">
-											<item.icon className="mr-2 h-4 w-4" />
-											{item.title}
-										</Link>
-									</DropdownMenuItem>
-								))}
-							</DropdownMenuGroup>
+    if(action === "logout"){
+        await logout();
+        toast.success("User Logged Out Successfully!");
+        router.push("/login");
+    }
+  };
 
-							<DropdownMenuSeparator />
+  return (
+    <nav className="border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="shrink-0">
+            <span className="text-2xl font-bold text-primary">
+              NextJs Press
+            </span>
+          </Link>
 
-							<DropdownMenuItem>
-								<LogOut className="mr-2 h-4 w-4 text-red-500" />
-								Sign out
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</div>
+          {/* Nav Links */}
+          <div className="hidden md:absolute md:left-1/2 md:transform md:-translate-x-1/2 md:flex md:items-center md:gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-foreground hover:text-primary transition-colors text-sm font-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
 
-				{/* Center - Navigation */}
-				<nav className="hidden md:flex justify-center gap-2">
-					{navItems.map((item) => (
-						<Button
-							key={item.href}
-							variant="ghost"
-							size="sm"
-							asChild
-						>
-							<Link href={item.href} className="flex items-center">
-								<item.icon className="mr-2 h-4 w-4" />
-								{item.title}
-							</Link>
-						</Button>
-					))}
-				</nav>
-
-				{/* Right - Logo */}
-				<div className="flex justify-end">
-					<Link href="/" className="flex items-center gap-2">
-						<div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-							<Package className="h-5 w-5" />
-						</div>
-						<span className="text-xl font-bold">Next JS</span>
-					</Link>
-				</div>
-			</div>
-		</header>
-	)
+          {/* User Dropdown */}
+          {
+            user.success ? (
+                <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="cursor-pointer">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <User className="w-4 h-4 text-primary" />
+                </div>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm font-medium">
+                    {user.data?.profile.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {user.data?.profile.email}
+                  </p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {userMenuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <DropdownMenuItem
+                    key={item.action}
+                    onClick={() => handleUserMenuAction(item.action)}
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    <span>{item.label}</span>
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={async () => {
+                await handleUserMenuAction("logout");
+              }}>
+                <LogOut className="w-4 h-4 mr-2" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+            ) : <Link href={"/login"} >
+                   <Button className="cursor-pointer">
+                        Login
+                   </Button>
+            </Link>
+          }
+        </div>
+      </div>
+    </nav>
+  );
 }

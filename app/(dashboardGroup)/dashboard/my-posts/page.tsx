@@ -1,11 +1,8 @@
-import React from 'react';
 
-const UserMypostsPage = () => {
-	return (
-		<div>
-			
-		</div>
-	);
-};
+const UserMyPostsPage = () => {
+  return (
+    <div>UserMyPostsPage</div>
+  )
+}
 
-export default UserMypostsPage;
+export default UserMyPostsPage

@@ -1,11 +1,8 @@
-import React from 'react';
 
 const UserDashboardPage = () => {
-	return (
-		<div>
-			this route only for dashboard
-		</div>
-	);
-};
+  return (
+    <div>UserDashboardPage</div>
+  )
+}
 
-export default UserDashboardPage;
+export default UserDashboardPage

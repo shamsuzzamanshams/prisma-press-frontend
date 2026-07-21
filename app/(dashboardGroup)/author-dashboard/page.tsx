@@ -1,11 +1,8 @@
-import React from 'react';
 
 const AuthorDashboardPage = () => {
-	return (
-		<div>
-			
-		</div>
-	);
-};
+  return (
+    <div>AuthorDashboardPage</div>
+  )
+}
 
-export default AuthorDashboardPage;
+export default AuthorDashboardPage

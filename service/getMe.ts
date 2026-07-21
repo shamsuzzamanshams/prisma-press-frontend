@@ -1,29 +1,42 @@
 "use server"
 
-
-import { cookies } from "next/headers"
+import { cookies } from "next/headers";
 
 export const getMe = async () => {
-	const cookiStore = await cookies();
-	const accessToken = cookiStore.get("accessToken")?.value;
+    const cookieStore = await cookies();
 
-	if (!accessToken) {
-		return{
-			success: false,
-			message: "User Not Logged In!!!!"
-		}
-	}
+    const accessToken = cookieStore.get("accessToken")?.value || null;
 
-	const res = await fetch(`${process.env.BACKEND_API_URL}/api/uaers/me`, {
-		headers: {
-			cookie: `accessToken: ${accessToken}`
-		}
-	})
+    console.log(accessToken);
+    
 
-	const result = res.json();
+    if(!accessToken){
+        // throw new Error("User Not Logged In!");
 
-	console.log(result);
+        return {
+            success : false,
+            message : "User not logged in!"
+        }
+    }
 
-	return result;
+    const res = await fetch(`${process.env.BACKEND_API_URL}/api/uaers/me`, {
+        headers : {
+            // Authorization : accessToken as unknown as string,
+            // Authorization : `${accessToken}`,
+            // Authorization : `Bearer ${accessToken}`
 
+            Cookie : `accesstoken=${accessToken}`
+        },
+
+        cache : "force-cache",
+        next : {
+            revalidate : 60 * 60 * 24, // 1day
+            tags : ["my-profile"]
+        }
+    });
+
+    const result = res.json();
+
+
+    return result
 }

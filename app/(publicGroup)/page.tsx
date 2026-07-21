@@ -1,24 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { getMe } from "@/service/getMe";
+
+export default async function HomePage() {
 
 
-
-export default async function Home() {
-
-  const user = await getMe();
-  console.log(user);
-  
   return (
-    <div>Hello Next.Js
+    <div>Hello, Next.js!
 
       <Button
-        size={"xs"}
-        variant={"destructive"}
+      size={"xs"}
+      variant={"destructive"}
       >
         Click Me
       </Button>
-
-
     </div>
   );
 }

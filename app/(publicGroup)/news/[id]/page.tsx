@@ -1,11 +1,8 @@
-import React from 'react';
 
-const NewsPageById = () => {
-	return (
-		<div>
-			
-		</div>
-	);
-};
+const NewsByIdPage = () => {
+  return (
+    <div>NewsByIdPage</div>
+  )
+}
 
-export default NewsPageById;
+export default NewsByIdPage

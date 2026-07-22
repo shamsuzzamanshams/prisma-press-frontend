@@ -9,7 +9,8 @@ export function proxy(request: NextRequest) {
 	
 	
 	console.log("Proxy");
-	return NextResponse.redirect(new URL('/', request.url))
+	// return NextResponse.redirect(new URL('/', request.url))
+	return NextResponse.next()
 	
 	
 }
@@ -19,7 +20,8 @@ export function proxy(request: NextRequest) {
 
 export const config = {
 	matcher:[
-		'/dashboard/:path*',
-		'/admin-dashboard/:path*',
+		// '/dashboard/:path*',
+		// '/admin-dashboard/:path*',
+		'/((?!api|_next/static|_next/image|.*\\.png$).*)'
 	] ,
 }
